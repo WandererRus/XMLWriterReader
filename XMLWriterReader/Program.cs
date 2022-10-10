@@ -91,40 +91,33 @@ namespace XMLWriterReader
         }
 
         public static void XMLLoad(string path)
-        {
-            
+        {            
             XmlTextReader? xmltr = null;
             List<Product> products = new List<Product>();
             Product prod = new Product("","",0); 
             try
             {
                 xmltr = new XmlTextReader(path);
-                xmltr.ReadStartElement("orders");
-                string name = "", description = "";
-                int price = 0;
                 while (xmltr.Read())
                 {
                     if (xmltr.NodeType == XmlNodeType.Element && xmltr.Name == "Product")
                     {
                         prod = new Product("","",0);
                         xmltr.MoveToAttribute(0);
-                        name = xmltr.Value;
+                        prod.Name = xmltr.Value;
                     }
                     if (xmltr.NodeType == XmlNodeType.Element && xmltr.Name == "description")
                     {
                         xmltr.MoveToContent();
-                        description = xmltr.ReadString();
+                        prod.Description = xmltr.ReadString();
                     }
                     if (xmltr.NodeType == XmlNodeType.Element && xmltr.Name == "price")
                     {
                         xmltr.MoveToContent();
-                        price = Int32.Parse(xmltr.ReadString());
+                        prod.Price = Int32.Parse(xmltr.ReadString());
                     }
                     if (xmltr.NodeType == XmlNodeType.EndElement && xmltr.Name == "Product")
                     {
-                        prod.Name = name;
-                        prod.Description = description;
-                        prod.Price = price;
                         if (prod.Name.Length > 1 && prod.Description.Length > 1 && prod.Price > 0)
                         {
                             products.Add(prod);                            
