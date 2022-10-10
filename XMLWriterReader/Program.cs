@@ -14,9 +14,20 @@ namespace XMLWriterReader
                 new Product("Asus", "Офисный унылый", 30000), 
                 new Product("Apple", "Престижный донельзя", 200000) 
             };
+            List<Product> listProduct2 = new List<Product>();
+            
             Order ord = new Order(listProduct);
+            Order ord2 = new Order(listProduct2);
+
             MyXML.SaveXML("test.xml", ord);
+
             MyXML.XMLLoad("test.xml");
+
+            ord2 = MyXML.XMLLoad("test.xml", ord2);
+            foreach (Product product in ord2._products)
+            {
+                Console.WriteLine(product.ToString());
+            }
         }
     }
 
@@ -151,6 +162,19 @@ namespace XMLWriterReader
 
         public static Order XMLLoad(string path, Order ord)
         {
+            XmlDocument xdoc = new XmlDocument(); 
+            if (path != null) xdoc.Load(path);
+
+            foreach (XmlElement xel in xdoc.GetElementsByTagName("Product"))
+            {
+                ord._products.Add(new Product(
+                        xel.GetAttribute("name"),
+                        xel.GetElementsByTagName("description")[0].InnerText,
+                        Int32.Parse(xel.GetElementsByTagName("price")[0].InnerText)
+                        )
+                    );
+                
+            }
 
             return ord;
         }
